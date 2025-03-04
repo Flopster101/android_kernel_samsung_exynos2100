@@ -130,9 +130,9 @@ static inline u16 nft_reg_load16(u32 *sreg)
 	return *(u16 *)sreg;
 }
 
-static inline void nft_reg_store64(u32 *dreg, u64 val)
+static inline void nft_reg_store64(u64 *dreg, u64 val)
 {
-	put_unaligned(val, (u64 *)dreg);
+	put_unaligned(val, dreg);
 }
 
 static inline u64 nft_reg_load64(u32 *sreg)
@@ -465,6 +465,11 @@ static inline bool nft_set_is_anonymous(const struct nft_set *set)
 static inline void *nft_set_priv(const struct nft_set *set)
 {
 	return (void *)set->data;
+}
+
+static inline enum nft_data_types nft_set_datatype(const struct nft_set *set)
+{
+	return set->dtype == NFT_DATA_VERDICT ? NFT_DATA_VERDICT : NFT_DATA_VALUE;
 }
 
 static inline bool nft_set_gc_is_pending(const struct nft_set *s)
