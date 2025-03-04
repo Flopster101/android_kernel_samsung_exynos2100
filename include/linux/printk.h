@@ -565,4 +565,23 @@ static inline void print_hex_dump_debug(const char *prefix_str, int prefix_type,
 
 typedef void (*hook_func_t)(const char *buf, size_t size, unsigned int id);
 extern void register_hook_logbuf(hook_func_t func);
+#ifdef CONFIG_PRINTK
+extern void __printk_safe_enter(void);
+extern void __printk_safe_exit(void);
+/*
+ * The printk_deferred_enter/exit macros are available only as a hack for
+ * some code paths that need to defer all printk console printing. Interrupts
+ * must be disabled for the deferred duration.
+ */
+#define printk_deferred_enter __printk_safe_enter
+#define printk_deferred_exit __printk_safe_exit
+#else
+static inline void printk_deferred_enter(void)
+{
+}
+static inline void printk_deferred_exit(void)
+{
+}
+#endif
+
 #endif
